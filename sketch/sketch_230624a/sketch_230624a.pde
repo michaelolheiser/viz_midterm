@@ -11,6 +11,12 @@ boolean isHoveringRight = false;
 boolean isHoveringBottomLeft = false;
 boolean isHoveringBottomRight = false;
 
+float popImageSize = 350;
+float askImageSize = 400;
+float ageImageSize = 300;
+float genImageSize = 300;
+float dir = 1;
+
 void setup() {
   size(945, 945);
   textAlign(CENTER, CENTER);
@@ -29,6 +35,9 @@ void setup() {
   populationImage.resize(350, 350);
   agegroupImage.resize(300, 300);
   genImage.resize(300, 300);
+  
+  //plot images using center coords
+  //imageMode(CENTER);
 }
 
 void draw() {
@@ -68,16 +77,29 @@ void draw() {
   }
 
   // Draw the population image at the top left corner
-  image(populationImage, -50, -50);
+  image(populationImage, -50, -50, popImageSize, popImageSize);
 
   // Draw the friendsFamilyImage at the top right corner
-  image(agegroupImage, width - agegroupImage.width +40, -25);
+  image(agegroupImage, width - agegroupImage.width +40, -25, ageImageSize, ageImageSize);
 
   // Draw the socialMediaImage at the bottom left corner
-  image(genImage, -25, height - genImage.height + 25);
+  image(genImage, -25, height - genImage.height + 25, genImageSize, genImageSize);
 
   // Draw the askforhelpImage at the bottom right corner
-  image(askforhelpImage, width - askforhelpImage.width + 85, height - askforhelpImage.height + 75);
+  image(askforhelpImage, width - askforhelpImage.width + 85, height - askforhelpImage.height + 75, askImageSize, askImageSize);
+  
+  //breathing effect for hover icons
+  if(popImageSize < 350) {
+    dir = 1;
+  } else if (popImageSize > 360) {
+    dir = -1;
+  }
+  
+  popImageSize += 0.15 * dir;
+  askImageSize += 0.15 * dir;
+  ageImageSize += 0.15 * dir;
+  genImageSize += 0.15 * dir;
+  
 
   // Draw the text box for left top corner hover
   if (isHoveringLeft) {
