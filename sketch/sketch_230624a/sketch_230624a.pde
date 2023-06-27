@@ -5,11 +5,14 @@ PImage genImage;
 PImage askforhelpImage;
 PImage bubbleImage;
 PImage barplotImage;
+PImage suicideInfographic;
+PImage demographicsImage;
 
 boolean isHoveringLeft = false;
 boolean isHoveringRight = false;
 boolean isHoveringBottomLeft = false;
 boolean isHoveringBottomRight = false;
+boolean isHoveringBottomMiddle = false;
 
 float popImageSize = 350;
 float askImageSize = 400;
@@ -23,18 +26,23 @@ void setup() {
   textSize(20);
 
   // Load images
-  populationImage = loadImage("C:\\Users\\Joey\\Desktop\\viz-info\\midterm_viz\\population.png");
-  backgroundImage = loadImage("C:\\Users\\Joey\\Desktop\\viz-info\\midterm_viz\\background.png");
-  agegroupImage = loadImage("C:\\Users\\Joey\\Desktop\\viz-info\\midterm_viz\\age_group.png");
-  genImage = loadImage("C:\\Users\\Joey\\Desktop\\viz-info\\midterm_viz\\generations.png");
-  askforhelpImage = loadImage("C:\\Users\\Joey\\Desktop\\viz-info\\midterm_viz\\askhelp.png");
-  bubbleImage = loadImage("C:\\Users\\Joey\\Desktop\\viz-info\\midterm_viz\\bubbleplot.png");
-  barplotImage = loadImage("C:\\Users\\Joey\\Desktop\\viz-info\\midterm_viz\\barplot.png");
+  populationImage = loadImage("population.png");
+  backgroundImage = loadImage("background.png");
+  agegroupImage = loadImage("age_group.png");
+  genImage = loadImage("generations.png");
+  askforhelpImage = loadImage("askhelp.png");
+  bubbleImage = loadImage("bubbleplot.png");
+  barplotImage = loadImage("barplot.png");
+  suicideInfographic = loadImage("suicideInfographic.png"); 
+  demographicsImage = loadImage("demographics.png"); 
+  
 
   askforhelpImage.resize(400, 400);
   populationImage.resize(350, 350);
   agegroupImage.resize(300, 300);
   genImage.resize(300, 300);
+  suicideInfographic.resize(350,400);
+  demographicsImage.resize(300, 300);
   
   //plot images using center coords
   //imageMode(CENTER);
@@ -75,6 +83,23 @@ void draw() {
   } else {
     isHoveringBottomRight = false;
   }
+  
+  // Check if the mouse is in the middle bottom of the screen
+  float middleBottomX = width / 2;
+  float middleBottomY = height - 100; // Adjust the Y-coordinate as per your needs
+  
+  if (mouseX >= middleBottomX - 200 && mouseX <= middleBottomX + 200 &&
+      mouseY >= middleBottomY && mouseY <= height) {
+    isHoveringBottomMiddle = true;
+  } else {
+    isHoveringBottomMiddle = false;
+  }
+  
+   // Draw the image for bottom right corner hover
+  if (isHoveringBottomRight) {
+    image(suicideInfographic, mouseX - 400, mouseY - 250);
+  }
+
 
   // Draw the population image at the top left corner
   image(populationImage, -50, -50, popImageSize, popImageSize);
@@ -85,8 +110,10 @@ void draw() {
   // Draw the socialMediaImage at the bottom left corner
   image(genImage, -25, height - genImage.height + 25, genImageSize, genImageSize);
 
-  // Draw the askforhelpImage at the bottom right corner
-  image(askforhelpImage, width - askforhelpImage.width + 85, height - askforhelpImage.height + 75, askImageSize, askImageSize);
+  // Draw the askforhelpImage at the bottom middle of the screen with a slight offset
+  float askImageX = width / 2 - askforhelpImage.width / 2;
+  float askImageY = height - askforhelpImage.height + 100; // Adjust the offset as per your needs
+  image(askforhelpImage, askImageX, askImageY, askImageSize, askImageSize);
   
   //breathing effect for hover icons
   if(popImageSize < 350) {
@@ -125,7 +152,7 @@ void draw() {
   }
 
   // Draw the text box for bottom right corner hover
-  if (isHoveringBottomRight) {
+  if (isHoveringBottomMiddle) {
     fill(255); // White color for the text box
     rect(mouseX - 400, mouseY - 250, 400, 250); // Adjust the dimensions as per your needs
     fill(0); // Black color for the text
