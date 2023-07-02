@@ -1,3 +1,8 @@
+import ddf.minim.*;
+
+Minim minim;
+AudioPlayer player;
+
 PImage backgroundImage;
 PImage populationImage;
 PImage agegroupImage;
@@ -18,6 +23,7 @@ float popImageSize = 350;
 float askImageSize = 400;
 float ageImageSize = 300;
 float genImageSize = 300;
+float demImageSize = 300;
 float dir = 1;
 
 void setup() {
@@ -46,6 +52,12 @@ void setup() {
   
   //plot images using center coords
   //imageMode(CENTER);
+  
+  // Initialize the Minim library
+  minim = new Minim(this);
+  
+  // Load the MP3 file
+  player = minim.loadFile("Logic_1800.wav");
 }
 
 void draw() {
@@ -109,6 +121,9 @@ void draw() {
 
   // Draw the socialMediaImage at the bottom left corner
   image(genImage, -25, height - genImage.height + 25, genImageSize, genImageSize);
+  
+  // Draw the demographicsImage at the bottom right corner
+  image(demographicsImage,680, height - genImage.height + 25, demImageSize, demImageSize);
 
   // Draw the askforhelpImage at the bottom middle of the screen with a slight offset
   float askImageX = width / 2 - askforhelpImage.width / 2;
@@ -126,6 +141,7 @@ void draw() {
   askImageSize += 0.15 * dir;
   ageImageSize += 0.15 * dir;
   genImageSize += 0.15 * dir;
+  demImageSize += 0.15 * dir; 
   
 
   // Draw the text box for left top corner hover
@@ -159,4 +175,17 @@ void draw() {
     textAlign(CENTER, CENTER);
     text("It is an act of courage and strength to seek support. By asking for help, individuals open themselves to finding solace, understanding, and the resources for healing. Through reaching out, they break the chains of depression and create connections that offer empathy, guidance, and professional assistance.", mouseX - 400, mouseY - 250, 400, 250); // Adjust the position and dimensions of the text box
   }
+}
+
+void mousePressed() {
+  // Check if the mouse is within a specific area (e.g., a rectangle)
+  if (mouseX > 300 && mouseX < 645 && mouseY > 650 && mouseY < 750) {
+    // If the mouse is within the area, play the MP3 file
+    player.play();
+  }
+}
+
+void mouseClicked() {
+  // Print the x and y coordinates of the mouse click
+  println("Mouse clicked at (" + mouseX + ", " + mouseY + ")");
 }
