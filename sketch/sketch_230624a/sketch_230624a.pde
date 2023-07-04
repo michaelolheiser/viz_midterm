@@ -12,6 +12,8 @@ PImage bubbleImage;
 PImage barplotImage;
 PImage suicideInfographic;
 PImage demographicsImage;
+PImage askforhelpTextbox;
+PImage friendsfamTextbox;
 
 boolean isHoveringLeft = false;
 boolean isHoveringRight = false;
@@ -41,7 +43,10 @@ void setup() {
   barplotImage = loadImage("barplot.png");
   suicideInfographic = loadImage("suicideInfographic.png"); 
   demographicsImage = loadImage("demographics.png"); 
-  
+  demographicsImage = loadImage("demographics.png"); 
+  askforhelpTextbox = loadImage("AskHelpTextbox.png");
+  friendsfamTextbox = loadImage("FriendsFamilyTextbox.png"); 
+
 
   askforhelpImage.resize(400, 400);
   populationImage.resize(350, 350);
@@ -106,11 +111,6 @@ void draw() {
   } else {
     isHoveringBottomMiddle = false;
   }
-  
-   // Draw the image for bottom right corner hover
-  if (isHoveringBottomRight) {
-    image(suicideInfographic, mouseX - 400, mouseY - 250);
-  }
 
 
   // Draw the population image at the top left corner
@@ -166,14 +166,19 @@ void draw() {
     var offsetX = 50; // Change this value to adjust the amount of rightward movement
     image(barplotImage, width / 2 - barplotImage.width / 2 + offsetX, height / 2 - barplotImage.height / 2);
   }
+  
+    
+   // Draw the image for bottom right corner hover
+  if (isHoveringBottomRight) {
+     // Draw the demographicsImage at the bottom right corner
+    image(suicideInfographic, mouseX - 400, mouseY - 250, suicideInfographic.width, suicideInfographic.height);
+  }
 
   // Draw the text box for bottom right corner hover
   if (isHoveringBottomMiddle) {
-    fill(255); // White color for the text box
-    rect(mouseX - 400, mouseY - 250, 400, 250); // Adjust the dimensions as per your needs
-    fill(0); // Black color for the text
-    textAlign(CENTER, CENTER);
-    text("It is an act of courage and strength to seek support. By asking for help, individuals open themselves to finding solace, understanding, and the resources for healing. Through reaching out, they break the chains of depression and create connections that offer empathy, guidance, and professional assistance.", mouseX - 400, mouseY - 250, 400, 250); // Adjust the position and dimensions of the text box
+   
+    image(askforhelpTextbox, 300, 500, askforhelpTextbox.width, askforhelpTextbox.height);
+
   }
 }
 
