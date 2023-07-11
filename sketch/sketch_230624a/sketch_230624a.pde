@@ -3,6 +3,12 @@ import ddf.minim.*;
 Minim minim;
 AudioPlayer player;
 
+import java.io.*;
+
+Table table;            
+int currentIndex;      
+boolean animationDone;  
+
 PImage backgroundImage;
 PImage populationImage;
 PImage agegroupImage;
@@ -37,12 +43,11 @@ void setup() {
   populationImage = loadImage("population.png");
   backgroundImage = loadImage("background.png");
   agegroupImage = loadImage("age_group.png");
-  genImage = loadImage("generations.png");
+  genImage = loadImage("suicide_by_year.png");
   askforhelpImage = loadImage("askhelp.png");
   bubbleImage = loadImage("bubbleplot.png");
   barplotImage = loadImage("barplot.png");
   suicideInfographic = loadImage("suicideInfographic.png"); 
-  demographicsImage = loadImage("demographics.png"); 
   demographicsImage = loadImage("demographics.png"); 
   askforhelpTextbox = loadImage("AskHelpTextbox.png");
   friendsfamTextbox = loadImage("FriendsFamilyTextbox.png"); 
@@ -56,10 +61,16 @@ void setup() {
   demographicsImage.resize(300, 300);
 
   // Initialize the Minim library
-  minim = new Minim(this);
+ // minim = new Minim(this);
 
   // Load the MP3 file
   player = minim.loadFile("Logic_1800.wav");
+ 
+  // Load the data from the CSV file
+  table = loadTable("suicide_rates_usa.csv", "header");
+  currentIndex = 0;
+  animationDone = false;
+  frameRate(5);
 }
 
 void draw() {
@@ -152,14 +163,29 @@ void draw() {
   if (isHoveringRight) {
     bubbleImage.resize(850, 700);
     image(bubbleImage, width / 2 - bubbleImage.width / 2, height / 2 - bubbleImage.height / 2);
-  }
+}
 
   // Draw the image for bottom left corner hover
   if (isHoveringBottomLeft) {
-    barplotImage.resize(550, 800);
-    // Adjust the X-coordinate to move the image to the right
-    var offsetX = 50; // Change this value to adjust the amount of rightward movement
-    image(barplotImage, width / 2 - barplotImage.width / 2 + offsetX, height / 2 - barplotImage.height / 2);
+   background(255);
+  
+  // Check if animation is complete
+  if (currentIndex >= table.getRowCount()) {
+    animationDone = true;
+  }
+  
+  // Plot the data points up to the current index
+  if (!animationDone) {
+    plotDataPoints(currentIndex);
+    currentIndex++;
+  }
+  
+    if (animationDone) {
+    plotDataPoints(18);
+  }
+  
+  // Draw labels and values
+  drawLabels();
   }
 
 
@@ -179,7 +205,7 @@ void draw() {
 
 void mousePressed() {
   // Check if the mouse is within a specific area (e.g., a rectangle)
-  if (mouseX > 300 && mouseX < 645 && mouseY > 650 && mouseY < 750) {
+ // if (mouseX > 300 && mouseX < 645 && mouseY > 650 && mouseY < 750) {
     // Toggle audio playback
     if (player.isPlaying()) {
       player.pause(); // If the player is already playing, pause it
@@ -192,4 +218,78 @@ void mousePressed() {
 void mouseClicked() {
   // Print the x and y coordinates of the mouse click
   println("Mouse clicked at (" + mouseX + ", " + mouseY + ")");
+}
+
+void plotDataPoints(int endIndex) {
+  // Set up variables for plotting
+  float xInterval = (width - 200) / table.getRowCount();
+  float yScale = (height-200) / getMaxRate();
+    int grid = 10;
+
+  // Plot each data point up to the specified end index
+  for (int i = 0; i <= endIndex; i++) {
+    TableRow row = table.getRow(i);
+    int year = row.getInt("Year");
+    float rate = row.getFloat("Rate");
+    // Calculate the position of the data point
+    float x = map(i, 0, table.getRowCount() - 1, 100, width - 100);
+    float y = map(rate, 0, getMaxRate(), height + 100, 100);
+
+    
+    // Draw a circle at the data point
+    noStroke();
+    fill(255, 191, 0);
+    ellipse(x, y, 15, 15);
+    stroke(0, 100, 200);
+    strokeWeight(5);
+    // axes
+    line(50, 400, 50, 100);
+    line(50, 400, width-50, 400);
+
+  }
+}
+
+void drawLabels() {
+  // Draw the year label
+  fill(50);
+  textAlign(CENTER, CENTER);
+  textSize(25);
+  
+  if (animationDone) {
+    text("Year: 2018", width / 2, 450);
+  } else {
+    TableRow row = table.getRow(currentIndex - 1);
+    int year = row.getInt("Year");
+    text("Year: " + year, width / 2, 450);
+  }
+  
+  // Draw the rate label
+  textAlign(CENTER, TOP);
+  textSize(25);
+  
+  if (animationDone) {
+    TableRow row = table.getRow(table.getRowCount()-1);
+    float rate = row.getFloat("Rate");
+    text("Suicide Rate per 100K in the US: " + rate, width / 2, 50);
+  } else {
+    TableRow row = table.getRow(currentIndex - 1);
+    float rate = row.getFloat("Rate");
+    text("Suicide Rate per 100K in the US: " + rate, width / 2, 50);
+  }
+}
+
+float getMaxRate() {
+  // Find the maximum suicide rate in the data
+  float maxRate = 0;
+  
+  for (int i = 0; i < table.getRowCount(); i++) {
+    TableRow row = table.getRow(i);
+    float rate = row.getFloat("Rate");
+    
+    if (rate > maxRate) {
+      maxRate = rate;
+    }
+  }
+  
+  return maxRate;
 }
